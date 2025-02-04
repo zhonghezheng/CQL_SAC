@@ -46,6 +46,6 @@ for i in range(iternum):
 
 
 plt.plot(np.arange(0, len(rewards), 1), rewards)
-plt.savefig('reward.png')
+plt.savefig(os.path.join(os.path.dirname(__file__), 'reward_evaluation.png'))
 
 
