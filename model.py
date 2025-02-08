@@ -25,8 +25,6 @@ class Critic(nn.Module):
         )
 
     def forward(self, state, action):
-        # print(state)
-        # print(action)
         x = self.flatten(torch.concatenate([state, action], 1))
         val1 = self.Q1(x)
         val2 = self.Q2(x)
@@ -55,6 +53,7 @@ class Actor(nn.Module):
         x = self.flatten(state)
         x = self.policy(x)
         mean = self.mean_linear(x)
+        mean = torch.tanh(mean) * 2
         log_std = self.log_std_linear(x)
         return mean, log_std
     
@@ -66,16 +65,12 @@ class Actor(nn.Module):
         normal_distribution = Normal(mean, std)
 
         #rsample allows us to back-propogate
-        action_sample = normal_distribution.rsample()
+        action = normal_distribution.rsample()
 
-        #enforcing bounds on action and scaling since action space [-2, 2]
-        action = torch.tanh(action_sample) * 2
-
-        return action
+        return action, log_std
     
     def get_mean(self, state):
-        mean, _ = self.forward(state)
-        mean = torch.tanh(mean) * 2 
+        mean, log = self.forward(state)
         return mean
 
         

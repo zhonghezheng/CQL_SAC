@@ -34,12 +34,15 @@ if __name__ == '__main__':
             data_processed['next_actions'].pop(i)
             data_processed['done'].pop(i)
             remove_state = False
+            # print()
         else:
             action = data_processed['actions'][i]
             state = data_processed['states'][i]
             theta = state[0]
             theta_dot = state[1]
-            rewards.append(np.float32(-(theta*theta + 0.1*theta_dot*theta_dot)))
+            rewards.append(np.float32(-(theta*theta + 0.1*theta_dot*theta_dot + 0.001 * action[0] * action[0])))
+            # print(-(theta*theta + 0.1*theta_dot*theta_dot + 0.001 * action[0] * action[0]))
+
         
             if data_processed['done'][i] == 1: 
                 remove_state = True
