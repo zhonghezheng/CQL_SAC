@@ -134,10 +134,6 @@ class SAC():
         for target_param, param in zip(self.critic_target.parameters(), self.critic.parameters()):
             target_param.data.copy_(target_param.data * (1.0 - rho) + param.data * rho)
 
-
-    def get_action(self, state):
-        phi_actions = self.actor.get_action(state)
-        return phi_actions
     
     def get_mean(self, state):
         phi_actions = self.actor.get_mean(state)

@@ -10,17 +10,17 @@ matplotlib.use('TKAgg')
 import os
 model_path = os.path.join(os.path.dirname(__file__), 'best_model.pt')
 
-iternum = 5000
+epochs = 50
 
-evaluate_steps = 100
+evaluate_steps = 1
 
 agent = SAC()
-batchsize = 1000
+batchsize = 10
 
 env = gym.make("Pendulum-v1")
 rewards = []
 reward_best = -np.inf
-for i in range(iternum):
+for i in range(epochs):
     agent.train()
     agent.update(batchsize)
 

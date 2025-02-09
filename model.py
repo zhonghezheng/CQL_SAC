@@ -53,7 +53,7 @@ class Actor(nn.Module):
         x = self.flatten(state)
         x = self.policy(x)
         mean = self.mean_linear(x)
-        mean = torch.tanh(mean) * 2
+        # mean = torch.tanh(mean) * 2
         log_std = self.log_std_linear(x)
         return mean, log_std
     
