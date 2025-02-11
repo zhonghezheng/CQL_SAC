@@ -4,8 +4,7 @@ import matplotlib.pyplot as plt
 import torch 
 import numpy as np
 from math import atan2
-import matplotlib
-matplotlib.use('TKAgg')
+
 
 import os
 model_path = os.path.join(os.path.dirname(__file__), 'best_model.pt')
