@@ -17,7 +17,7 @@ from parameters import alpha, rho, gamma, alpha_prime
 import numpy as np
 
 class SAC():
-    def __init__(self, state_dim=2, action_dim=1, critic_hidden=256, actor_hidden=256):
+    def __init__(self, state_dim=3, action_dim=1, critic_hidden=256, actor_hidden=256):
         self.critic = Critic(action_dim=action_dim, state_dim=state_dim, hidden_dim=critic_hidden)
         self.critic_target = Critic(action_dim=action_dim, state_dim=state_dim, hidden_dim=critic_hidden)
 
