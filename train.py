@@ -9,37 +9,35 @@ from math import atan2
 import os
 model_path = os.path.join(os.path.dirname(__file__), 'best_model.pt')
 
-epochs = 50
+epochs = 100
 
 evaluate_steps = 1
 
 agent = SAC()
-batchsize = 10
+batchsize = 256
 
-env = gym.make("Pendulum-v1")
+env = gym.make("Pendulum-v1", render_mode='human')
 rewards = []
 reward_best = -np.inf
 for i in range(epochs):
     agent.train()
     agent.update(batchsize)
 
-    if i%evaluate_steps == 0:
+    if i % evaluate_steps == 0:
         agent.eval()
         with torch.no_grad():
             print(f"Evaluating at iter={i}")
-            state = env.reset()
-            state = np.array([[np.float32(atan2(state[0][0], state[0][1])), np.float32(state[0][2])]])
-            state = torch.tensor(state)
+            obs, _ = env.reset()
+            obs_torch = torch.tensor(obs).float().unsqueeze(0)
             done = False
             reward_total = 0
-            while not done:            
-                action = agent.get_mean(state)
-                nextstate, reward, terminated, truncated, _ = env.step(action.numpy()[0]) 
+            while not done:
+                action = agent.get_mean(obs_torch)
+                obs, reward, terminated, truncated, _ = env.step(action.numpy()[0])
                 done = terminated or truncated
                 reward_total += reward
-                state = nextstate
-                state = np.array([[np.float32(atan2(state[0], state[1])), np.float32(state[2])]])
-                state = torch.tensor(state)
+                obs_torch = torch.tensor(obs).float().unsqueeze(0)
+
             rewards.append(reward_total)
             if reward_total > reward_best:
                 reward_best = reward_total
