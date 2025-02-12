@@ -61,9 +61,9 @@ class SAC():
         pi_actions_next, pi_log_next = self.actor(next_states)
         q1_next, q2_next = self.critic_target(next_states, pi_actions_next)
 
-        # y = rewards + gamma*(1. - dones)*(torch.min(q1_next, q2_next) - self.alpha*pi_log_next)
+        y = rewards + gamma*(1. - dones)*(torch.min(q1_next, q2_next) - self.alpha*pi_log_next)
 
-        y = rewards + gamma*(1.)*(torch.min(q1_next, q2_next) - self.alpha*pi_log_next)
+        # y = rewards + gamma*(1.)*(torch.min(q1_next, q2_next) - self.alpha*pi_log_next)
 
         q1, q2 = self.critic(states, actions)
     
@@ -82,26 +82,26 @@ class SAC():
         q1_next, q2_next = self.critic(next_states, pi_actions_next)
 
         # importance sampled version, helps with higher dimension 
-        # random_density = np.log(0.5 ** pi_actions.shape[-1])
-        # cat_q1 = torch.cat(
-        #     [q1_mu - random_density, q1_next - pi_log_next, q1_pi - pi_log], 1
-        # )
-        # cat_q2 = torch.cat(
-        #     [q2_mu - random_density, q2_next - pi_log_next, q2_pi - pi_log], 1
-        # )
+        random_density = np.log(0.5 ** pi_actions.shape[-1])
+        cat_q1 = torch.cat(
+            [q1_mu - random_density, q1_next - pi_log_next, q1_pi - pi_log], 1
+        )
+        cat_q2 = torch.cat(
+            [q2_mu - random_density, q2_next - pi_log_next, q2_pi - pi_log], 1
+        )
 
         # Using variant of CQL with KL-divergence for regularization
-        # min_qf1_loss = torch.logsumexp(cat_q1, dim=1,).mean() 
-        # min_qf2_loss = torch.logsumexp(cat_q2, dim=1,).mean() 
+        min_qf1_loss = torch.logsumexp(cat_q1, dim=1,).mean() 
+        min_qf2_loss = torch.logsumexp(cat_q2, dim=1,).mean() 
 
-        # min_qf1_loss = min_qf1_loss - q1.mean()
-        # min_qf2_loss = min_qf2_loss - q2.mean()
+        min_qf1_loss = min_qf1_loss - q1.mean()
+        min_qf2_loss = min_qf2_loss - q2.mean()
 
-        min_qf1_loss = torch.logsumexp(q1_mu, dim=1,).mean() 
-        min_qf2_loss = torch.logsumexp(q2_mu, dim=1,).mean() 
+        # min_qf1_loss = torch.logsumexp(q1_mu, dim=1,).mean() 
+        # min_qf2_loss = torch.logsumexp(q2_mu, dim=1,).mean() 
 
-        min_qf1_loss = min_qf1_loss - q1_pi.mean()
-        min_qf2_loss = min_qf2_loss - q2_pi.mean()
+        # min_qf1_loss = min_qf1_loss - q1_pi.mean()
+        # min_qf2_loss = min_qf2_loss - q2_pi.mean()
 
         # Update Q-functions via gradient descent
         q_loss = 0.5*q1_loss + 0.5*q2_loss + alpha_prime * min_qf1_loss + alpha_prime *min_qf2_loss
