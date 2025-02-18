@@ -116,7 +116,7 @@ class SAC():
         phi_actions, phi_log = self.actor(states)
 
         q1_predict, q2_predict = self.critic(states, phi_actions)
-        phi_loss = (torch.min(q1_predict, q2_predict) - self.alpha*phi_log).mean()
+        phi_loss = -(torch.min(q1_predict, q2_predict) - self.alpha*phi_log).mean()
 
         self.actor_optim.zero_grad()
         phi_loss.backward()

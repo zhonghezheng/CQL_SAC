@@ -25,8 +25,8 @@ state = state[0]
 done = False
 while not done:
     print("State:", state)
-    state = np.array([[np.float32(atan2(state[0], state[1])), np.float32(state[2])]])
-    state = torch.tensor(state)
+    # state = np.array([[np.float32(atan2(state[0], state[1])), np.float32(state[2])]])
+    state = torch.tensor(state).float().unsqueeze(0)
     action = model.get_mean(state)
     state, reward, terminated, truncated, _ = env.step(action.detach().numpy()[0]) 
     print("Action:", action.detach().numpy()[0])
