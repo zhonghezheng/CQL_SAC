@@ -29,8 +29,7 @@ class SAC():
         self.log_alpha = torch.tensor(np.log(alpha), requires_grad=True)
         self.log_alpha_optimizer = Adam(params = [self.log_alpha], lr=0.005)
         
-        
-        # Set target paramters equal to main parameters
+        # Set target parameters equal to main parameters
         for target_param, param in zip(self.critic_target.parameters(), self.critic.parameters()):
             target_param.data.copy_(param.data)
         
